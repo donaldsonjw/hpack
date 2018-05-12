@@ -1,0 +1,70 @@
+* hpack: a Bigloo implementation of HPACK
+
+** Description
+   The hpack library is an implementation of [[https://http2.github.io/http2-spec/compression.html][HPACK: Header Compression
+   for HTTP/2]] for Bigloo. It provides a simple api consisting of 3
+   procedures.
+
+   * ~(make-hpack-context max-size::long)~ :: construct a
+        encoding/decoding context with a max size.
+   * ~(hpack-encode! context headers #!key (enable-huffman #t))~ :: encode the provide headers with hpack given ~context~. The keyword argument ~enable-huffman~
+        controls whether huffman encoding is used for string
+        literals. By default, it is. ~headers~ is a list of headers
+        where each header is a list of length 2 consisting of a header name and value
+        or a list of length 3 consisting of a header name, value, and
+        symbol indicating when the header should be added to the index
+        table. Valid symbols are ~indexed~, ~non-indexed~, and
+        ~never-indexed~. For length 2 header lists, a value of
+        ~indexed~ is assumed. ~hpack-encode!~ returns 2 values. The
+        first is length of the encoded headers and a srfi74 blob
+        containing the encoded data. The blob maybe larger than the
+        encoded length. ~context~ is updated as a side-effect.
+   * ~(hpack-decode! context blob #!optional (length #unspecified)~ ::
+        decode the hpack compressed headers in blob with the given
+        ~context~. If the optional length is not provided, the size of
+        the blob is assumed to be the total hpack compressed size. A
+        list of headers is returned. Each header is a length 2 list
+        containing the header name and value.  
+     
+** Building
+    hpack depends on 2 external libraries. The first is a bigloo
+    implementation of [[https://github.com/donaldsonjw/srfi74][srfi74]], and the second is the [[https://github.com/donaldsonjw/hoard][hoard]] collections
+    library. Both need to be installed before building hpack.
+
+    Both the Bigloo native and jvm backends are supported. To build the native library, execute
+    
+    ~make~
+    
+    To build the JVM library, execute
+
+    ~make jvm~
+
+    To build both, execute
+ 
+    ~make all~
+
+** Installation
+   To install the library, execute 
+
+   ~make install~
+
+   This by default installs the library into /usr/lib/bigloo. If you have Bigloo installed to a different prefix, execute 
+   
+   ~make install DESTDIR=/path/prefix~
+
+   This will result in the library being installed /path/prefix/lib/bigloo.
+
+** Tests
+   To run the tests, you will need to install [[https://github.com/donaldsonjw/btest][btest]]. Once this is done, the native tests can be executed with 
+   
+   ~make test~
+
+   and the jvm tests can be executed with 
+
+   ~make jtest~
+
+
+   
+   
+
+      
