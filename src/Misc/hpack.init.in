@@ -1,0 +1,5 @@
+(declare-library! 'hpack
+   :version "0.1"
+   :srfi '(hpack)
+   :basename "hpack"
+   :module-eval 'hpack_make_lib)
